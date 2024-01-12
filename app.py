@@ -219,6 +219,11 @@ def generateFilterString(userToken):
 def prepare_body_headers_with_data(request):
     request_messages = request.json["messages"]
 
+    # body["messages"].append({general_company_info})
+    last_message = request_messages[-1]
+    last_message["content"] += general_company_info
+    request_messages[-1] = last_message
+
     body = {
         "messages": request_messages,
         "temperature": float(AZURE_OPENAI_TEMPERATURE),
@@ -229,7 +234,10 @@ def prepare_body_headers_with_data(request):
         "dataSources": []
     }
 
-    body["messages"].append({general_company_info})
+    # # body["messages"].append({general_company_info})
+    # last_message = request_messages["messages"][-1]
+    # last_message["content"] += general_company_info
+
 
     if DATASOURCE_TYPE == "AzureCognitiveSearch":
         # Set query type
