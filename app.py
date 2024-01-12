@@ -12,6 +12,7 @@ from dotenv import load_dotenv
 
 from backend.auth.auth_utils import get_authenticated_user_details
 from backend.history.cosmosdbservice import CosmosConversationClient
+from prompts import assistant_identity_context, general_company_info, product_listings
 
 load_dotenv()
 
@@ -215,7 +216,6 @@ def generateFilterString(userToken):
     return f"{AZURE_SEARCH_PERMITTED_GROUPS_COLUMN}/any(g:search.in(g, '{group_ids}'))"
 
 
-
 def prepare_body_headers_with_data(request):
     request_messages = request.json["messages"]
 
@@ -228,6 +228,8 @@ def prepare_body_headers_with_data(request):
         "stream": SHOULD_STREAM,
         "dataSources": []
     }
+
+    body["messages"].append({general_company_info})
 
     if DATASOURCE_TYPE == "AzureCognitiveSearch":
         # Set query type
